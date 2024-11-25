@@ -1,9 +1,13 @@
+import styles from "./footer.module.css";
+
 const Footer = () => {
   return (
     <footer>
-      <a href="#">로고</a>
-      <div>카피라이터</div>
-      <div>SNS</div>
+      <div className={styles.layout}>
+        <a href="#">로고</a>
+        <div>카피라이터</div>
+        <div>SNS</div>
+      </div>
     </footer>
   );
 };

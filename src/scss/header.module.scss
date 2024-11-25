@@ -1,0 +1,20 @@
+@import "mixins";
+@import "value";
+
+header {
+  @include flex-center;
+  .layout {
+    @include flex-center-basic;
+    .logo {
+    }
+    .gnb {
+      ul {
+        @include flex-center;
+        li {
+          a {
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+main {
+  background-color: greenyellow;
+  padding: 10px;
+}
+
+.layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: hotpink;
+}
+
+a {
+  color: red;
+}

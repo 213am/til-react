@@ -1,0 +1,31 @@
+@import "value";
+@import "mixins";
+
+.wrap {
+  position: relative;
+  @include flex-center;
+  width: $width-screen;
+  .notice {
+    @include flex-center;
+    width: $pc-screen;
+
+    ul {
+      li {
+        @include flex-center;
+        @include border-fn(red);
+        background-color: $color-bg;
+        &:hover {
+          background-color: pink;
+        }
+      }
+    }
+  }
+  .slide {
+    @include flex-center;
+    width: $mobile-screen;
+  }
+  .banner {
+    @include flex-center;
+    width: 300px;
+  }
+}

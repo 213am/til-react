@@ -1,142 +1,282 @@
 # React 컴포넌트 만들기
 
-## 1. 컴포넌트란?
+- html 즉, jsx 작성하기
 
-- 웹페이지의 `각 요소 중` 재활용이 되는 내용을 별도의 `.jsx`로 생성한 것
-- (예시) Header.jsx, Footer.jsx 등
+## 1. 컴포넌트에 css 추가하기
 
-</br>
+- css 폴더에 css 파일들을 모아서 사용하는 경우가 많음
+- 개인적 추천
+  > jsx 파일이 있는 곳에 css 파일도 같이 두기를 권장
+  > css 규칙은 컴포넌트명과 동일한 css 파일명(모두 소문자)을 권장
 
-## 2. `Component` 와 `Page` 의 구분
+## 2. css 추가 및 적용하는 법
 
-- 수업 중 `Page` 라고 말하는 것은 `Component` 들을 모아서 하나의 페이지를 구성하는 것
-- 추후 `pages` 폴더와 `components` 폴더를 생성해 분리
-- `폴더명은 무조건 소문자` - window 에서는 대소문자 구분을 안하기 때문에
+### 2.1. css 라이브러리 활용
 
-</br>
+- `index.html` 에 `link` 권장
 
-## 3. 컴포넌트의 이해
+  > `reset.css`
+  > : https://meyerweb.com/eric/tools/css/reset/
+  > : 추후 `npm install` 활용해서 사용가능
+  >
+  > `namalize.css`
+  > : https://necolas.github.io/normalize.css/
+  > : 추후 `npm install` 활용해서 사용가능
+  >
+  > `font awesome`( 아이콘 글꼴 )
+  > : https://cdnjs.com/libraries/font-awesome
+  > : 추후 `npm install` 활용해서 사용가능
+  >
+  > `google font`
+  > : https://fonts.google.com/
+  > : 추후 `index.css` 에 작성해서 활용
 
-### 3.1. html 을 React 에서는 `jsx`라고 함
+### 2.2. 전체 css 에 `공통 적용`이 필요한 경우
 
-- `js 로 html 을 생성`하는 역할
-- 함수명은 대문자로 시작하는 `PascalCase`
-- jsx 를 출력하는 함수는 `PascalCase` 를 써야한다는 규칙이 존재
-- jsx 를 출력하는 함수는 반드시 `return ( )` 구문이 있어야 한다는 규칙이 존재
-- `( ) 안쪽에 html` 형식을 작성
-- jsx 는 `html 태그 형식`으로 호출(call)
-- jsx 는 반드시 `root 태그`가 존재해야 함
-- 묶음을 만드는 것 외에는 용도가 없는 root 라면 `<> </> Fragment` 로 묶어준다
+- `/src/index.css` 를 활용하기를 권장
 
-```js
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-
-function IndexPage() {
-  return (
-    <>
-      <header>상단</header>
-      <main>메인</main>
-      <footer>하단</footer>
-    </>
-  );
+```css
+:root {
+  --primary-color: #000000;
+  --secondary-color: #0000ff;
+  --font-size-base: 16px;
 }
 
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <IndexPage />
-  </StrictMode>,
-);
-```
-
-### 3.2. 각 `화면의 기능`에 따라서 파일을 분리
-
-- `협업`을 해야하므로 각 기능별 단위마다 `별도의 component` 관리 필요
-- `/src/pages/` 폴더에는 URL 주소에 맞는 페이지 배치
-- `/src/components/` 폴더에는 각각의 페이지에 배치될 html 요소들 배치
-- `/src/main.jsx`
-
-```jsx
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./index.css";
-import IndexPage from "./pages/IndexPage";
-// import CeoPage from "./pages/CeoPage";
-
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <IndexPage />
-    {/* <CeoPage /> */}
-  </StrictMode>,
-);
-```
-
-- `/src/pages/IndexPage.jsx`
-
-```jsx
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-
-function IndexPage() {
-  return (
-    <>
-      <Header />
-      <main>
-        <div>공지사항 / 갤러리</div>
-        <div>배너</div>
-        <div>바로가기</div>
-      </main>
-      <Footer />
-    </>
-  );
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-
-export default IndexPage;
+a {
+  text-decoration: none;
+  color: #000000;
+}
+ul,
+li {
+  list-style: none;
+}
+html {
+  font-size: 16px;
+}
+body {
+  font-size: var(--font-size-base);
+  color: var(--primary-color);
+}
+/* 웹서비스 개발시 권장함.(개인적으로) */
+html,
+body,
+:root {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
 ```
 
-- `/src/components/Header.jsx`
+- 다른 방법으로는 `scss` 를 활용하는 방법
+
+### 2.3. `module.css` 방식
+
+- `협업을 할 것` 이라는 가정
+
+- 협업시 `css 의 우선권 문제`가 발생하여 원활한 css 작업이 어려움
+
+- 최소 `컴포넌트명.module.css` 를 준수하기를 권장
+  > 예시 `/src/components/footer.module.css`
 
 ```jsx
-const Header = () => {
-  return (
-    <header>
-      <a href="#">로고</a>
-      <div>
-        <ul>
-          <li>
-            <a href="#">주메뉴</a>
-          </li>
-          <li>
-            <a href="#">주메뉴</a>
-          </li>
-          <li>
-            <a href="#">주메뉴</a>
-          </li>
-          <li>
-            <a href="#">주메뉴</a>
-          </li>
-        </ul>
-      </div>
-    </header>
-  );
-};
+import styles from "./footer.module.css";
 
-export default Header;
-```
-
-- `/src/components/Footer.jsx`
-
-```jsx
 const Footer = () => {
   return (
     <footer>
-      <a href="#">로고</a>
-      <div>카피라이터</div>
-      <div>SNS</div>
+      <div className={styles.layout}>
+        <a href="#">로고</a>
+        <div>copyright</div>
+        <div>SNS</div>
+      </div>
     </footer>
   );
 };
 
 export default Footer;
 ```
+
+```css
+footer {
+  background-color: aquamarine;
+}
+
+.layout {
+  background-color: brown;
+}
+
+.layout a {
+  color: aliceblue;
+}
+```
+
+- 다른 방법으로는 `scss` 를 활용하는 방법
+- `JavaScript Object` 를 활용한 css 적용 방법
+
+### 2.4. `SCSS` 방식
+
+- 소스관리가 편함
+- css 를 체계적으로 구성
+- css 에 프로그래밍적 요소로 작성 가능(변수, mixin:함수 등)
+
+#### 2.4.1. 환경구성
+
+```bash
+npm i -D sass
+```
+
+- Extensions 에서 `Live Sass Compiler` 설치
+
+#### 2.4.2. 기본 문법의 이해
+
+- `/src/scss/` 폴더 생성 권장
+- `/src/scss/test.scss` 파일 생성( 확장자 확인 )
+
+#### 2.4.3. 중첩 문법 ( Nesting )
+
+```scss
+.wrap {
+  position: relative;
+
+  .notice {
+    width: 500px;
+
+    ul {
+      li {
+        background-color: blue;
+      }
+    }
+  }
+  .slide {
+    width: 200px;
+  }
+  .banner {
+    width: 300px;
+  }
+}
+```
+
+#### 2.4.4. 변수
+
+```scss
+$width-screen: 1680px;
+$pc-screen: 1024px;
+$tobile-screen: 760px;
+$color-bg: blue;
+
+.wrap {
+  position: relative;
+  width: $width-screen;
+  .notice {
+    width: $pc-screen;
+
+    ul {
+      li {
+        background-color: $color-bg;
+      }
+    }
+  }
+  .slide {
+    width: $mobile-screen;
+  }
+  .banner {
+    width: 300px;
+  }
+}
+```
+
+#### 2.4.5. 변수는 별도의 파일로 관리
+
+- `_파일명`으로 만들면 `.css`, `css.map` 생성을 방지
+
+```scss
+$width-screen: 2000px;
+$pc-screen: 1024px;
+$mobile-screen: 760px;
+$color-bg: yellow;
+```
+
+- 변수 사용시 `@import "파일명"` 사용
+
+```scss
+@import "value";
+
+.wrap {
+  position: relative;
+  width: $width-screen;
+  .notice {
+    width: $pc-screen;
+
+    ul {
+      li {
+        background-color: $color-bg;
+      }
+    }
+  }
+  .slide {
+    width: $mobile-screen;
+  }
+  .banner {
+    width: 300px;
+  }
+}
+```
+
+#### 2.4.6. Mixins 사용하기(함수)
+
+- 파일명에 `_`를 활용(`_mixins.scss`)
+
+```scss
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin border-fn($color) {
+  border: 5px solid $color;
+}
+```
+
+```scss
+@import "value";
+@import "mixins";
+
+.wrap {
+  position: relative;
+  @include flex-center;
+  width: $width-screen;
+  .notice {
+    @include flex-center;
+    width: $pc-screen;
+
+    ul {
+      li {
+        @include flex-center;
+        @include border-fn(red);
+        background-color: $color-bg;
+        &:hover {
+          background-color: pink;
+        }
+      }
+    }
+  }
+  .slide {
+    @include flex-center;
+    width: $mobile-screen;
+  }
+  .banner {
+    @include flex-center;
+    width: 300px;
+  }
+}
+```
+
+#### 2.4.7. `module.scss` 만들기
+
+- `header.module.scss` 파일 생성
