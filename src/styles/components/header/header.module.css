@@ -1,0 +1,29 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  height: 100px;
+  margin: 0 auto;
+  background-color: brown;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 100%;
+  background-color: black;
+  color: aliceblue;
+}
+
+.gnb {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
+  width: 600px;
+  height: 100%;
+  background-color: chocolate;
+}
