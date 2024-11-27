@@ -1,189 +1,645 @@
-# React 프로젝트 생성(Vite)
+# React JSX 문법
 
-## 1. 프로젝트 생성 과정
+## 1. Component Props
 
-### 1.1. `github Repository` 생성(소문자)
+- 컴포넌트의 `property=값` 으로 작성하면
 
-### 1.2. PC 에 `프로젝트 폴더`(소문자) 생성 및 `VSCode` 실행
-
-### 1.3. `Vite` 프로젝트 생성
-
-```bash
-npm create vite@latest .
-npm create vite@latest 프로젝트명
-
-npm install
+```jsx
+<Box hi={"hello"} age={10} isLogin={false}>
+  <a href="#">링크</a>
+</Box>
 ```
 
-### 1.4. `git` 작업
+- 컴포넌트 내부로 `{ } 객체 리터럴`로 전달된다
 
-```bash
-git init
-
-git remote add origin 주소
+```jsx
+function Box(props) {
+  console.log("객체", props);
+  return <div>Box</div>;
+}
+export default Box;
 ```
 
-### 1.5. `README.md` 작성
+- 만약 컴포넌트 내부에 작성된 내용이 있다면
+- `자식` 을 React 에서는 `children` 이라는 `property 명`으로 지정
 
-- 실제 프로젝트 관련 내용(AI 로 기본 뼈대 작성하는 방법 권장)
-
-### 1.6. `.env` 환경설정 파일 생성
-
-- `/` 에 `.env` 파일 생성
-- `.gitignore` 에 `.env` 파일 추가
-
-```bash
-# env
-.env
+```jsx
+<Box hi={"hello"} age={10} isLogin={false}>
+  자식
+</Box>
 ```
 
-### 1.7. `index.html` 수정
+- props 의 property 를 이런 방식으로도 사용할 수 있지만, 비추천
 
-- `<html lang="ko"></html>` 수정
-- `<title>프로젝트 이름</title>` 수정
+```jsx
+console.log("객체", props);
+console.log("객체", props.hi);
+console.log("객체", props.age);
+console.log("객체", props.isLogin);
+console.log("객체", props.children);
+console.log("객체", props["hi"]);
+console.log("객체", props["age"]);
+console.log("객체", props["isLogin"]);
+console.log("객체", props["children"]);
+```
 
-### 1.8. 기본 `css` 수정
+- `props` 는 꼭 `Destructuring(객체 구조 분해 할당)` 해서 사용하자
 
-- `/src/App.css` 내용 전체 삭제
-- `/src/index.css`
+```jsx
+function Box({ hi, age, isLogin, children }) {
+  return (
+    <div>
+      <h1>
+        내용입니다
+        {children}
+      </h1>
+    </div>
+  );
+}
+export default Box;
+```
 
-```css
-:root {
-  --primary-color: #000000;
-  --secondary-color: #0000ff;
-  --font-size-base: 16px;
-}
+<br />
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-a {
-  text-decoration: none;
-  color: #000000;
-}
-ul,
-li {
-  list-style: none;
-}
-html {
-  font-size: 16px;
-}
-body {
-  font-size: var(--font-size-base);
-  color: var(--primary-color);
-}
-/* 웹서비스 개발시 권장함.(개인적으로) */
-html,
-body,
-:root {
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
+## 2. Component 조건문
+
+### 2.1. falthy 한 값은 jsx 에 출력되지 않는다
+
+```jsx
+null, undefined, false, 0, "";
+```
+
+- if 문을 jsx 내부에서 사용할 수 없음
+
+### 2.2. jsx 에 직접 코딩 가능한 문법
+
+#### 2.2.1. 3항연산자
+
+```jsx
+조건 ? true 일 경우 return 값 : false 일 경우 return 값
+
+로그인상태 : {isLogin ? "로그인" : "로그아웃"}
+```
+
+#### 2.2.2. 논리연산자
+
+```
+조건 && 결과;
+
+나이: {age < 18 && "미성년자";}
+```
+
+- 조건이 `참`이면 `뒷내용` 출력
+- 조건이 `거짓`이면 ` ` 출력
+
+```
+조건 || 결과;
+
+인사: {hi === "hello" || "인사해주세요";}
+```
+
+- 조건이 `참`이면 `앞내용` 출력
+- 조건이 `거짓`이면 `뒷내용` 출력
+
+#### 2.2.3. 옵셔널 체이닝
+
+- React 에러를 처리해주는 중요한 역할
+
+```
+객체?.속성명;
+
+유저레벨: {info?.level;}
+아바타: {info?.avatar;}
+게임포인트: {info?.point;}
+```
+
+### 2.3. `js 로 결과 만든 후 jsx 에 출력하기
+
+#### 2.3.1. if
+
+```jsx
+let message;
+let nowStatus = status.charAt(0);
+if (nowStatus === "2") {
+  message = "자료성공";
+} else if (nowStatus === "4") {
+  message = "Not Found Page";
+} else if (nowStatus === "5") {
+  message = "Server Shut Down";
+} else {
+  message = "No No No";
 }
 ```
 
-### 1.9. `prettier` 설치 및 셋팅
+```jsx
+if (fetching === "pending") {
+  return (
+    <p>
+      네트워크가 <b>연결중</b> 입니다.
+    </p>
+  );
+}
 
-```bash
-npm install --save-dev prettier eslint-config-prettier eslint-plugin-prettier
-```
+if (fetching === "fresh") {
+  return (
+    <p>
+      네트워크가 <b>새로운 데이터</b> 입니다.
+    </p>
+  );
+}
 
-- `/` 에 `.prettierrc` 파일 생성
-
-```json
-// .prettierrc
-{
-  "singleQuote": false,
-  "semi": true,
-  "useTabs": false,
-  "tabWidth": 2,
-  "trailingComma": "all",
-  "printWidth": 80,
-  "arrowParens": "avoid",
-  "endOfLine": "auto"
+if (fetching === "stale") {
+  return (
+    <p>
+      네트워크가 <b>오래된 데이터</b> 입니다.
+    </p>
+  );
 }
 ```
 
-### 1.10. `eslint` 와 `prettier` 통합 설정
+#### 2.3.1. switch
 
-- `eslint.config.js` 수정
+```jsx
+switch (fetching) {
+  case "pending":
+    response = (
+      <p>
+        네트워크가 <b>연결중</b> 입니다.
+      </p>
+    );
+    break;
+  case "fresh":
+    response = (
+      <p>
+        네트워크가 <b>새로운 데이터</b> 입니다.
+      </p>
+    );
+    break;
+  case "stale":
+    response = (
+      <p>
+        네트워크가 <b>오래된 데이터</b> 입니다.
+      </p>
+    );
+    break;
+  default:
+    response = (
+      <p>
+        네트워크가 <b>에러</b> 입니다.
+      </p>
+    );
+    break;
+}
+```
+
+## 3. 컴포넌트 반복
 
 ```js
-import js from "@eslint/js";
-import globals from "globals";
-import react from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import prettier from "eslint-plugin-prettier";
-
-export default [
-  // dist 폴더는 검사 제외
-  { ignores: ["dist"] },
+// 샘플 데이터
+const goods = [
   {
-    // 검사할 파일 확장자
-    files: ["**/*.{js,jsx}"],
-    // 언어 옵션
-    languageOptions: {
-      ecmaVersion: "latest", // 최신 ECMAScript 문법 사용
-      globals: globals.browser, // 브라우저 환경 글로벌 변수 사용
-      parserOptions: {
-        ecmaFeatures: { jsx: true }, // JSX 문법 활성화
-        sourceType: "module", // ES 모듈 사용
-      },
-    },
-    // React 버전 설정
-    settings: { react: { version: "18.3" } },
-    // 플러그인 설정
-    plugins: {
-      react, // React 관련 규칙 플러그인
-      "react-hooks": reactHooks, // React Hooks 규칙 플러그인
-      "react-refresh": reactRefresh, // React Refresh 규칙 플러그인
-      prettier, // Prettier 플러그인
-    },
-    // 규칙 정의
-    rules: {
-      ...js.configs.recommended.rules, // 기본 JavaScript 권장 규칙
-      ...react.configs.recommended.rules, // React 권장 규칙
-      ...react.configs["jsx-runtime"].rules, // JSX Runtime 규칙
-      ...reactHooks.configs.recommended.rules, // React Hooks 권장 규칙
-      "react/jsx-no-target-blank": "off", // target="_blank" 관련 규칙 비활성화
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ], // React Fast Refresh 규칙
-      "prettier/prettier": "warn", // Prettier 규칙 (포매팅 오류를 에러로 표시)
-    },
+    id: 100,
+    cate: "과일",
+    goodsName: "사과",
+    imgUrl:
+      "http://tourimage.interpark.com/product/tour/00161/A10/500/A1051015_1_980.jpg",
+  },
+  {
+    id: 99,
+    cate: "과일",
+    goodsName: "사과",
+    imgUrl:
+      "http://tourimage.interpark.com/product/tour/00161/A10/500/A1051015_1_980.jpg",
+  },
+  {
+    id: 103,
+    cate: "전자제품",
+    goodsName: "노트북",
+    imgUrl:
+      "http://tourimage.interpark.com/product/tour/00161/A10/500/A1051015_1_980.jpg",
+  },
+  {
+    id: 1004,
+    cate: "패션",
+    goodsName: "바지",
+    imgUrl:
+      "http://tourimage.interpark.com/product/tour/00161/A10/500/A1051015_1_980.jpg",
   },
 ];
 ```
 
-### 1.11. `eslint` 테스트
-
-- `App.js` 전체 내용 삭제 후
-- `rfce` 입력 후 테스트
-
-```js
-function App() {
-  const a = 1; // test
-  return <div>App</div>;
-}
-export default App;
+```jsx
+<Box fruits={fruits} goods={goods} />
 ```
 
-### 1.12. 실행 테스트
+### 3.1. `map( )` 반복문
 
-- `npm run dev`
+```jsx
+// Box.jsx
+import { GoodsDetailDiv } from "../src/styles/components/common/styled-common.js";
 
-</br>
+const Box = ({ goods }) => {
+  return (
+    <div>
+      <h1>여기는 레이아웃</h1>
+      <div>
+        {goods.map(item => {
+          return (
+            <GoodsDetailDiv key={item?.id}>
+              <h3>{item?.cate}</h3>
+              <h2>{item?.goodsName}</h2>
+              <div>
+                <img src={item?.imgUrl} alt={item?.goodsName} />
+              </div>
+            </GoodsDetailDiv>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+export default Box;
+```
 
-## 2. `github` 작업
+- 추천
+  : 기능과 화면은 분리하려고 노력하자
 
-```bash
-git add .
+```jsx
+// Box.jsx
+import { GoodsDetailDiv } from "../src/styles/components/common/styled-common.js";
 
-git commit
+const Box = ({ goods, tickets, tour }) => {
+  const renderGoods = datas => {
+    const result = datas.map(item => {
+      return (
+        <GoodsDetailDiv key={item?.id}>
+          <h3>{item?.cate}</h3>
+          <h2>{item?.goodsName}</h2>
+          <div>
+            <img src={item?.imgUrl} alt={item?.goodsName} />
+          </div>
+        </GoodsDetailDiv>
+      );
+    });
+    return result;
+  };
+  return (
+    <div>
+      <h1>여기는 레이아웃</h1>
+      {/* 상품정보 1 */}
+      <div>{renderGoods(goods)}</div>
+      {/* 상품정보 2 */}
+      <div>{renderGoods(tour)}</div>
+      {/* 상품정보 3 */}
+      <div>{renderGoods(tickets)}</div>
+    </div>
+  );
+};
+export default Box;
+```
 
-git push origin main
+### 3.2. `forEach` 반복문
+
+```jsx
+// forEach Sample
+const renderGoodsEach = datas => {
+  const tempArr = [];
+  datas.forEach(item => {
+    const tag = (
+      <GoodsDetailDiv key={item?.id}>
+        <h3>{item?.cate}</h3>
+        <h2>{item?.goodsName}</h2>
+        <div>
+          <img src={item?.imgUrl} alt={item?.goodsName} />
+        </div>
+      </GoodsDetailDiv>
+    );
+    tempArr.push(tag);
+  });
+  return tempArr;
+};
+```
+
+## 4. 컴포넌트 state
+
+- 모든 컴포넌트는 `state` 속성을 가지고 있다
+- 모든 컴포넌트는 가지고 있는 `state 가 바뀌면 화면을 리렌더링` 한다
+- 모든 컴포넌트는 웹브라우저 새로고침 하기 전까지 `state 를 유지`한다
+
+### 4.1. useState 사용 기준
+
+- 리액트 컴포넌트에서 사용하는 변수는 그냥 `useState()`로 생성
+- 컴포넌트를 변수를 변경해서 리렌더링이 필요한 경우에도 `useState()` 사용
+
+### 4.2. State 업데이트 시점문제 해결책
+
+```jsx
+import { useState } from "react";
+
+const Sample0 = () => {
+  console.log("re-rendering");
+  // count 를 state 에 보관하고, count 리렌더링 하기
+  const [count, setCount] = useState(0);
+  const click = () => {
+    // 비동기라서 함수완료 후 반영되기 때문에 연속으로 업데이트는 안됨
+    // setCount(count + 1);
+    // setCount(count + 1);
+
+    setCount(previewCount => previewCount + 1);
+    setCount(previewCount => previewCount + 1);
+  };
+
+  return (
+    <div>
+      <h1>현재점수 : {count}</h1>
+      <div>
+        <button onClick={click}>점수올리기</button>
+      </div>
+    </div>
+  );
+};
+export default Sample0;
+```
+
+```jsx
+import { useState } from "react";
+
+const Sample0 = () => {
+  console.log("re-rendering");
+  // count 를 state 에 보관하고, count 리렌더링 하기
+  const [count, setCount] = useState(0);
+  const clickAdd = () => {
+    setCount(count + 1);
+  };
+  const clickMinus = () => {
+    if (count <= 0) {
+      return;
+    }
+    setCount(count - 1);
+  };
+  const clickReset = () => {
+    setCount(0);
+  };
+
+  return (
+    <div>
+      <h1>현재점수 : {count}</h1>
+      <div>
+        <button onClick={clickAdd}>점수올리기</button>
+        <button onClick={clickMinus}>점수내리기</button>
+        <button onClick={clickReset}>점수초기화</button>
+      </div>
+    </div>
+  );
+};
+export default Sample0;
+```
+
+```jsx
+import { useState } from "react";
+
+const Sample0 = () => {
+  // 사용자가 입력한 정보를 기억하기
+  const [memo, setMemo] = useState("");
+
+  return (
+    <div>
+      <h1>입력내용 : {memo}</h1>
+      <div>
+        <input
+          type="text"
+          onChange={e => {
+            setMemo(e.target.value);
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+export default Sample0;
+```
+
+```jsx
+import { useState } from "react";
+
+const Sample0 = () => {
+  // 할일 목록
+  const [todoList, setTodoList] = useState([]);
+  // 지금 입력중인 할일
+  const [todo, setTodo] = useState("");
+  const clickAdd = () => {
+    // 목록을 만들어서 업데이트
+    setTodoList([...todoList, todo]);
+    setTodo("");
+  };
+  return (
+    <div>
+      <h1>입력내용 : {todo}</h1>
+      <div>
+        <input
+          type="text"
+          value={todo}
+          onChange={e => {
+            setTodo(e.target.value);
+          }}
+        />
+      </div>
+      <div>
+        <button onClick={clickAdd}>할일 추가</button>
+        {todoList.map((item, index) => {
+          return <div key={index}>{item}</div>;
+        })}
+      </div>
+    </div>
+  );
+};
+export default Sample0;
+```
+
+```jsx
+import { useState } from "react";
+
+const Sample1 = () => {
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPass, setUserPass] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleClick = () => {
+    if (userName === "") {
+      setErrorMessage("이름을 입력하세요");
+      return;
+    }
+    if (userEmail === "") {
+      setErrorMessage("이메일을 입력하세요");
+      return;
+    }
+    if (userPass === "") {
+      setErrorMessage("비밀번호를 입력하세요");
+      return;
+    }
+    console.log("로그인 시도 중");
+  };
+
+  return (
+    <div>
+      <form>
+        <input
+          type="text"
+          placeholder="이름을 입력하세요"
+          value={userName}
+          onChange={e => setUserName(e.target.value)}
+        />
+        <br />
+        <input
+          type="email"
+          placeholder="이메일을 입력하세요"
+          value={userEmail}
+          onChange={e => setUserEmail(e.target.value)}
+        />
+        <br />
+        <input
+          type="password"
+          placeholder="비밀번호를 입력하세요"
+          value={userPass}
+          onChange={e => setUserPass(e.target.value)}
+        />
+        <br />
+        <br />
+        <button type="button" onClick={handleClick}>
+          로그인
+        </button>
+      </form>
+      <br />
+      <div>
+        <div style={{ color: "red" }}>Error : {errorMessage}</div>
+      </div>
+      <br />
+      <div>이름 : {userName}</div>
+      <div>이메일 : {userEmail}</div>
+      <div>비밀번호 : {userPass}</div>
+    </div>
+  );
+};
+export default Sample1;
+```
+
+```jsx
+import { useState } from "react";
+
+const Sample1 = () => {
+  // 서버 전송용 데이터 객체 리터럴 관리
+  const [formData, setFormData] = useState({
+    user_name: "",
+    user_email: "",
+    user_pass: "",
+  });
+  // form 의 태그의 props 를 이용해 처리
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+  const [errorMessage, setErrorMessage] = useState("");
+  const handleClick = () => {
+    if (formData.user_name === "") {
+      setErrorMessage("이름을 입력하세요");
+      return;
+    }
+    if (formData.user_email === "") {
+      setErrorMessage("이메일을 입력하세요");
+      return;
+    }
+    if (formData.user_pass === "") {
+      setErrorMessage("비밀번호를 입력하세요");
+      return;
+    }
+    console.log("로그인 시도 중");
+  };
+
+  return (
+    <div>
+      <form>
+        <input
+          type="text"
+          name="user_name"
+          placeholder="이름을 입력하세요"
+          value={formData.user_name}
+          onChange={e => handleChange(e)}
+        />
+        <br />
+        <input
+          type="email"
+          name="user_email"
+          placeholder="이메일을 입력하세요"
+          value={formData.user_email}
+          onChange={e => handleChange(e)}
+        />
+        <br />
+        <input
+          type="password"
+          name="user_pass"
+          placeholder="비밀번호를 입력하세요"
+          value={formData.user_pass}
+          onChange={e => handleChange(e)}
+        />
+        <br />
+        <br />
+        <button type="button" onClick={handleClick}>
+          로그인
+        </button>
+      </form>
+      <br />
+      <div>
+        <div style={{ color: "red" }}>Error : {errorMessage}</div>
+      </div>
+      <br />
+      <div>이름 : {formData.user_name}</div>
+      <div>이메일 : {formData.user_email}</div>
+      <div>비밀번호 : {formData.user_pass}</div>
+    </div>
+  );
+};
+export default Sample1;
+```
+
+```jsx
+import { useState } from "react";
+
+const Sample2 = () => {
+  const [cart, setCart] = useState([]);
+  const addCart = str => {
+    setCart([...cart, str]);
+  };
+  const removeCart = _index => {
+    const arr = cart.filter((item, index) => _index !== index);
+    setCart(arr);
+  };
+  return (
+    <>
+      <h1>상품 목록</h1>
+      <div>
+        <button onClick={() => addCart("사과")}>사과</button>
+        <button onClick={() => addCart("바나나")}>바나나</button>
+        <button onClick={() => addCart("딸기")}>딸기</button>
+        <button onClick={() => addCart("배")}>배</button>
+      </div>
+      <br />
+      <h2>장바구니</h2>
+      {cart.length === 0 ? (
+        <p>장바구니가 비어있어요</p>
+      ) : (
+        <ul>
+          {cart.map((item, index) => {
+            return (
+              <li key={index}>
+                {item}
+                <button onClick={() => removeCart(index)}>x</button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </>
+  );
+};
+export default Sample2;
 ```
