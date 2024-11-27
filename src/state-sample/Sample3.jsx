@@ -3,18 +3,23 @@ import { useState } from "react";
 const Sample3 = () => {
   const [popup, setPopup] = useState(false);
   const popupCSS = {
-    visible: !popup ? "none" : "visible",
+    display: popup ? "block" : "none",
+    position:"absolute",
+    top: "300px",
+    left:"500px",
+    width:"500px",
+    height:"450px",
+    border: "1px solid black",
+    backgroundColor:"brown"
   };
 
   return (
     <>
-      <button onClick={popup}>보기</button>
+     <button onClick={() => setPopup(true)}>보기</button>
       <div style={popupCSS}>
         팝업창
         <button
-          onClick={() => {
-            setPopup(!popup);
-          }}
+          onClick={() => setPopup(false)}
         >
           창닫기
         </button>
