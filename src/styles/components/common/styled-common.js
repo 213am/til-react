@@ -9,3 +9,13 @@ export const LinkDiv = styled.div`
   height: 100%;
   background-color: ${props => props.bc || "tan"};
 `;
+
+// 제품 출력 css
+export const GoodsDetailDiv = styled.div`
+  h3 {
+    color: brown;
+  }
+  img {
+    width: 200px;
+  }
+`;
