@@ -13,21 +13,54 @@ const EventSample1 = () => {
     birthday: "2024-11-28",
     introduce: "",
     picture: null,
-    document: null,
+    document: [],
     hobby: ["잠자기"],
   };
-  const [formData, setFormData] = useState({ initData });
+
+  const [formData, setFormData] = useState(initData);
   const [idCheck, setIdCheck] = useState(false);
 
   const changeHandler = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked, files } = e.target;
+    if (type === "checkbox") {
+      setFormData({
+        ...formData,
+        [name]: checked
+          ? [...formData.hobby, value]
+          : formData.hobby.filter(item => {
+              return item !== value;
+            }),
+      });
+      return;
+    }
+    if (type === "file") {
+      if (name === "picture") {
+        setFormData({ ...formData, picture: files[0] });
+        return;
+      }
+      if (name === "document") {
+        setFormData({ ...formData, document: Array.from(files) });
+        return;
+      }
+    }
+    setFormData({ ...formData, [name]: value });
   };
-  const clickHandler = () => {};
+  // const clickHandler = () => {};
   const submitHandler = e => {
     e.preventDefault();
   };
-  const keyDownHandler = () => {};
-  const idCheckHandler = () => {};
+  const keyDownHandler = e => {
+    if (e.key === "Enter") {
+      if (formData.userpass !== e.target.value) {
+        alert("비밀번호가 서로 다릅니다");
+        setFormData({ ...formData, [e.target.name]: "" });
+      }
+    }
+  };
+  const idCheckHandler = () => {
+    alert(`${formData.userid}를 들고 백엔드 갔다왔더니 중복 아니랍니다`);
+    setIdCheck(true);
+  };
 
   return (
     <div>
@@ -57,15 +90,7 @@ const EventSample1 = () => {
                 changeHandler(e);
               }}
             />
-            <button
-              type="button"
-              onClick={() => {
-                alert(
-                  `${formData.userid}를 들고 백엔드 갔다왔더니 중복 아니랍니다`,
-                );
-                setIdCheck(true);
-              }}
-            >
+            <button type="button" onClick={() => idCheckHandler()}>
               중복확인
             </button>
           </div>
@@ -113,12 +138,7 @@ const EventSample1 = () => {
                 changeHandler(e);
               }}
               onKeyDown={e => {
-                if (e.key === "Enter") {
-                  if (formData.userpass !== e.target.value) {
-                    alert("비밀번호가 서로 다릅니다");
-                    setFormData({ ...formData, [e.target.name]: "" });
-                  }
-                }
+                keyDownHandler(e);
               }}
             />
           </div>
@@ -245,25 +265,27 @@ const EventSample1 = () => {
             />
           </div>
           <div>
-            <label>취미 : 배열의 A 또는 B 또는 C 등등...</label>
-            <label htmlFor="sleep">잠자기</label>
-            <input
-              type="checkbox"
-              name="hobby"
-              id="sleep"
-              value={formData.hobby}
-              defaultChecked
-            />
-            <label htmlFor="golf">골프</label>
-            <input type="checkbox" name="hobby" id="golf" value="골프" />
-            <label htmlFor="soccer">축구</label>
-            <input type="checkbox" name="hobby" id="soccer" value="축구" />
-            <label htmlFor="basketball">농구</label>
-            <input type="checkbox" name="hobby" id="basketball" value="농구" />
-            <label htmlFor="volleyball">배구</label>
-            <input type="checkbox" name="hobby" id="volleyball" value="배구" />
-            <label htmlFor="baseball">야구</label>
-            <input type="checkbox" name="hobby" id="baseball" value="야구" />
+            <label>취미</label>
+            {["잠자기", "골프", "축구", "농구", "배구", "야구"].map(
+              (item, index) => {
+                return (
+                  <span key={index}>
+                    <label htmlFor={`hobby${index + 1}`}>{item}</label>
+                    <input
+                      type="checkbox"
+                      name="hobby"
+                      id={`hobby${index + 1}`}
+                      value={item}
+                      // defaultChecked
+                      checked={(formData.hobby || []).includes(item)}
+                      onChange={e => {
+                        changeHandler(e);
+                      }}
+                    />
+                  </span>
+                );
+              },
+            )}
           </div>
         </fieldset>
         <div>
