@@ -1,23 +1,3 @@
-# fetch 로 REST API 연동해 보기
-
-new XHR(**X**ml **H**ttp **R**equest)
-
-- `async ... await` 로 비동기처리
-
-## 1. 사전 조건 : 백엔드 서버가 활성화
-
-- 터미널에 prompt 현재 폴더가 server 여야 함
-- `npm run start` 실행
-- `http://192.168.0.66:5000/todos`
-- `{"title": " ", "content": " "}`
-
-## 2. fetch 로 데이터 연동하기
-
-- `jwt(Javascript Web Token)` 인증없이 진행인 경우
-- `/src/todos/` 폴더 생성
-- `/src/main.jsx` import
-
-```jsx
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -249,4 +229,3 @@ const Todo = () => {
 };
 
 export default Todo;
-```
