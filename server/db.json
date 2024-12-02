@@ -1,0 +1,19 @@
+{
+  "todos": [
+    {
+      "id": "2",
+      "title": "postman 공부",
+      "content": "사용법 공부하자"
+    },
+    {
+      "id": "1",
+      "title": "리액트공부",
+      "content": "axios 공부하자"
+    },
+    {
+      "id": "6b77",
+      "title": "잘되시나요?",
+      "content": "테스트"
+    }
+  ]
+}
