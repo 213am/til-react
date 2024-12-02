@@ -8,12 +8,11 @@ const Sample4 = () => {
     setLike(like + 1);
   };
   const clickDisLike = () => {
-    if (disLike <= 0) {
-      return;
-    }
-    setDisLike(disLike - 1);
+    // if (disLike <= 0) {
+    //   return;
+    // }
+    setDisLike(disLike + 1);
   };
-  console.log(like);
   return (
     <>
       <div>

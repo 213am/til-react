@@ -1,19 +1,20 @@
+import styled from "@emotion/styled";
 import { useState } from "react";
 
+const ColorDiv = styled.div`
+  background-color: ${props => props.bg || "yellowgreen"};
+`;
 const Sample5 = () => {
-    const [bgColor, setBgColor] = useState("");
-    const changeColor = (color) => {
-      setBgColor(color)
-    }
+  const [bgColor, setBgColor] = useState("");
 
   return (
     <>
-     <div style={{ backgroundColor: bgColor, width:"100%", height:"100vh" }}>
-      <div>색상이 바뀌어요</div>
-      <button onClick={() => changeColor("red")}>빨강</button>
-      <button onClick={() => changeColor("yellow")}>노랑</button>
-      <button onClick={() => changeColor("blue")}>파랑</button>
-    </div>
+      <ColorDiv bg={bgColor}>
+        <div>색상이 바뀌어요</div>
+        <button onClick={() => setBgColor("red")}>빨강</button>
+        <button onClick={() => setBgColor("yellow")}>노랑</button>
+        <button onClick={() => setBgColor("blue")}>파랑</button>
+      </ColorDiv>
     </>
   );
 };
