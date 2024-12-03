@@ -1,0 +1,72 @@
+{
+  "todos": [
+    {
+      "id": "2",
+      "title": "postman 공부",
+      "content": "사용법 공부하자"
+    },
+    {
+      "id": "1",
+      "title": "리액트공부",
+      "content": "axios 공부하자"
+    },
+    {
+      "id": "6b77",
+      "title": "잘되시나요?",
+      "content": "테스트"
+    }
+  ],
+  "diaries": [
+    {
+      "id": "bcc2",
+      "title": "하하",
+      "date": "2024-12-01",
+      "content": "일요일 최고",
+      "mood": "0",
+      "weather": "1"
+    },
+    {
+      "id": "a6ef",
+      "title": "월요일 좋아",
+      "date": "2024-12-02",
+      "content": "월요일 좋아~ 최고로 좋아~",
+      "mood": "4",
+      "weather": "0"
+    },
+    {
+      "id": "9e80",
+      "title": "일기 만들기",
+      "date": "2024-12-03",
+      "content": "재밌다 하하",
+      "mood": "4",
+      "weather": "0"
+    }
+  ],
+  "members": [
+    {
+      "id": "1f40",
+      "email": "asdasd@asdasd",
+      "pw": "123123"
+    },
+    {
+      "id": "5cf3",
+      "email": "barem210@gmail.com",
+      "pw": "123123"
+    },
+    {
+      "id": "2077",
+      "email": "asdasd@asdasd123",
+      "pw": "12523546"
+    },
+    {
+      "id": "7eeb",
+      "email": "asdf@adsfa",
+      "pw": "31451345"
+    },
+    {
+      "id": "6268",
+      "email": "asdasd@asdasd2",
+      "pw": "154714527"
+    }
+  ]
+}
