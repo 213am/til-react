@@ -1,11 +1,10 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import Todo from "./todos/Todo.jsx";
-// import Todo1 from "./todos/Todo1.jsx";
+import Member from "./member/Member.jsx";
 
 createRoot(document.getElementById("root")).render(
   <>
-    <Todo />
-    {/* <Todo1 /> */}
+    {/* <Diary /> */}
+    <Member />
   </>,
 );
