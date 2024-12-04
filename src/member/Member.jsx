@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { axiosInstance } from "../apis/config";
+import { deleteMember, getMembers, postMember } from "../apis/members";
 
 const Member = () => {
-  const API_URL = `http://localhost:5000/members`;
   const initData = {
     email: "",
     pw: "",
@@ -23,7 +24,7 @@ const Member = () => {
 
   const submitHandler = e => {
     e.preventDefault();
-    postMember({ ...formData });
+    callApiPost({ ...formData });
   };
 
   const handleChangeEdit = e => {
@@ -36,46 +37,18 @@ const Member = () => {
   };
 
   // API method
-  const getMembers = async () => {
+  const getMember = async _id => {
     try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      setMemberList(data);
+      const res = await axiosInstance.get(`${API_URL}/${_id}`);
+      console.log(res.data);
     } catch (error) {
       console.log(`오류 발생 : ${error}`);
     }
   };
-  const getMember = () => {};
-  const postMember = async item => {
-    try {
-      await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(item),
-      });
-      getMembers();
-      setFormData(initData);
-    } catch (error) {
-      console.log(`오류 발생 : ${error}`);
-    }
-  };
-  const deleteMember = async _id => {
-    try {
-      await fetch(`${API_URL}/${_id}`, {
-        method: "DELETE",
-      });
-      getMembers();
-    } catch (error) {
-      console.log(`오류 발생 : ${error}`);
-    }
-  };
+
   const putMember = async item => {
     try {
-      await fetch(`${API_URL}/${item.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(item),
-      });
+      await axiosInstance.put(`${API_URL}/${item.id}`, item);
       getMembers();
       setIsEdit(false);
     } catch (error) {
@@ -83,8 +56,32 @@ const Member = () => {
     }
   };
 
+  // 호출도 하면서 호출된 결과를 state 업데이트
+  const callApiMember = async () => {
+    const result = await getMembers();
+    setMemberList(result);
+  };
+
+  const callApiPost = async item => {
+    const result = await postMember(item);
+    if (result === "success") {
+      callApiMember();
+    } else {
+      alert("다시 시도해주세요.");
+    }
+  };
+
+  const callApiDelete = async _id => {
+    const result = await deleteMember(_id);
+    if (result === "success") {
+      callApiMember();
+    } else {
+      alert("다시 시도해주세요.");
+    }
+  };
+
   useEffect(() => {
-    getMembers();
+    callApiMember();
     return () => {};
   }, []);
 
@@ -144,7 +141,7 @@ const Member = () => {
 
                   <button
                     onClick={() => {
-                      deleteMember(item.id);
+                      callApiDelete(item.id);
                     }}
                   >
                     삭제
