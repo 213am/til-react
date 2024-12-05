@@ -1,10 +1,9 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import Member from "./member/Member.jsx";
+import App from "./App";
 
 createRoot(document.getElementById("root")).render(
   <>
-    {/* <Diary /> */}
-    <Member />
+    <App />
   </>,
 );
