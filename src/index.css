@@ -1,3 +1,13 @@
+/* 글꼴 설정 */
+@font-face {
+  font-family: "chab";
+  src: url("/chab.ttf");
+}
+@font-face {
+  font-family: "ddag";
+  src: url("/ddag.ttf");
+}
+
 :root {
   --primary-color: #000000;
   --secondary-color: #0000ff;
@@ -21,6 +31,7 @@ html {
   font-size: 16px;
 }
 body {
+  font-family: "chab";
   font-size: var(--font-size-base);
   color: var(--primary-color);
 }
