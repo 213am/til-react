@@ -1,11 +1,10 @@
-import chuu from "../../assets/20221128000648_0.jpg";
-
+import iu from "../../assets/iu.jpg";
 function Index() {
   return (
     <div>
-      /about 소개의 첫 페이지
-      <img src="/20221128000648_0.jpg" />
-      <img src={chuu} />
+      about/소개의 첫페이지
+      <img src="/iu.jpg" />
+      <img src={iu} />
     </div>
   );
 }

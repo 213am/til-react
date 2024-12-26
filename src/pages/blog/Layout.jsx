@@ -5,7 +5,7 @@ function Layout() {
     <div>
       <div>로컬메뉴</div>
       <div>
-        <h2>Outlet 자리</h2>
+        <h2> Outlet 자리</h2>
         <div
           style={{
             backgroundColor: "yellowgreen",

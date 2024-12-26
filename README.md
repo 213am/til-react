@@ -1,292 +1,218 @@
-# Context API
+# useMemo
 
-- 용도
-  : 웹 앱서비스에서 기본적으로 관리할 자료 보관 및 처리
-  : 사용자 로그인 정보
-  : 테마
-  : 장바구니 등
+## useMemo
 
-- 특징
-  : 개별 컴포넌트의 state 가 아니고, 앱 전체의 state
-  : context 로도 충분하지만, 좀 더 복잡한 데이터 처리 라이브러리가 많음
-  : Redux(난이도 가장 높음)
-  : Recoil(난이도가 비교적 낮고, 국내에서 활성화)
-  : Zustand(난이도가 비교적 낮고, 해외에서 활성화, 국내에서도 활성화 중)
+- 값을 연산한 결과 보관시 활용
+- 배열의 복잡한 연산시 결과 보관에 활용
+- 변수를 보관
+- 값, 또는 복잡한 계산의 결과를 재활용할 때
+- 같은 값을 계속해서 리렌더링 시 `계산하지 않도록 보관`
+- `가능한 남용하지 않도록` 오히려 부하가 발생할 수 있음
 
-## useState 로 state 관리
+## 기본 이해
 
-- useState 는 각각의 컴포넌트가 state 를 관리하는 형식
-- Drilling 으로 인한 문제점을 이해해보자
+- 아래 코드는 숫자를 변경하면 다시 계산한다
+- 아래 코드는 글자를 변경하면 다시 number 를 계산한다
+- 즉, 매번 다시 계산한다(성능상 이유없이 다시 계산하는 문제)
 
 ```jsx
 import { useState } from "react";
 
-const Header = ({ userInfo, setUserInfo }) => {
-  return (
-    <header>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <p>로고</p>
-        <nav>
-          {userInfo.userId === "" ? (
-            <div>
-              <button
-                onClick={() => {
-                  setUserInfo({
-                    userId: "hong",
-                    userName: "gildong",
-                    userRole: "MEMBER",
-                  });
-                }}
-              >
-                로그인
-              </button>
-              <button onClick={() => {}}>회원가입</button>
-            </div>
-          ) : (
-            <div>
-              <button
-                onClick={() => {
-                  setUserInfo({
-                    userid: "",
-                    userName: "",
-                    userRole: "GUEST",
-                  });
-                }}
-              >
-                로그아웃
-              </button>
-              <button onClick={() => {}}>
-                {userInfo.userName}님의 정보수정
-              </button>
-            </div>
-          )}
-        </nav>
-      </div>
-    </header>
-  );
-};
-const Footer = ({ userInfo }) => {
-  return <footer>하단 {userInfo.userRole}</footer>;
-};
-const Main = ({ userInfo }) => {
-  return (
-    <main>
-      {userInfo.userId === "" ? (
-        <div>로그인 하셔야 서비스 이용이 가능합니다</div>
-      ) : (
-        <div>
-          <Character userInfo={userInfo} />
-          <Friend userInfo={userInfo} />
-          <Point userInfo={userInfo} />
-          <Map userInfo={userInfo} />
-          <FAQ userInfo={userInfo} />
-        </div>
-      )}
-    </main>
-  );
-};
-
-const Character = ({ userInfo }) => {
-  return (
-    <div>
-      <div>{userInfo.userName}님의 캐릭터 변경 서비스</div>
-      <ChoiceCharacter />
-    </div>
-  );
-};
-const ChoiceCharacter = ({ userInfo }) => {
-  return <div>캐릭터 종류 선택</div>;
-};
-const Friend = ({ userInfo }) => {
-  return <div>{userInfo.userName}님의 친구 관리 서비스</div>;
-};
-const Point = ({ userInfo }) => {
-  return <div>{userInfo.userName}님의 포인트 구매 서비스</div>;
-};
-const Map = ({ userInfo }) => {
-  return <div>{userInfo.userName}님의 주변 검색 서비스</div>;
-};
-const FAQ = ({ userInfo }) => {
-  return <div>{userInfo.userName}님의 고객센터 QnA 서비스</div>;
-};
-
 function App() {
-  // useState 로 로그인한 사용자 정보 관리
-  const [userInfo, setUserInfo] = useState({
-    userId: "",
-    userName: "",
-    userRole: "GUEST",
-  });
+  const [number, setNumber] = useState(0);
+  const [text, setText] = useState("");
+  const resultFn = () => {
+    return number * number;
+  };
 
   return (
     <div>
-      <Header userInfo={userInfo} setUserInfo={setUserInfo} />
-      <Main userInfo={userInfo} />
-      <Footer userInfo={userInfo} />
+      <h1>간단한 계산 출력</h1>
+      <div>
+        <input
+          type="number"
+          placeholder="숫자를 입력하세요"
+          value={number}
+          onChange={e => {
+            setNumber(parseInt(e.target.value));
+          }}
+        />
+        <p>값 : {number}</p>
+      </div>
+      <div>
+        <input
+          type="text"
+          placeholder="글자를 입력하세요"
+          value={text}
+          onChange={e => {
+            setText(e.target.value);
+          }}
+        />
+        <p>글자 : {text}</p>
+      </div>
     </div>
   );
 }
 export default App;
 ```
 
-## Context API 활용
-
-### 추천 폴더 구조
-
-- `/src/contexts` 폴더 생성을 권장
-  : context 는 `문맥`, `일관성`, `목표` 라고 함
-  : context 는 `프로그램의 전체 목표를 이루기 위한 흐름`
-
-### 추천 파일
-
-- `/src/contexts` 폴더에 파일 생성
-- 예시
-  : ThemeContext.jsx // 테마관련
-  : BucketContext.jsx // 장바구니
-  : UserInfoContext.jsx // 유저정보
+- useMemo 를 이용한 연산에 조건을 걸어두고 진행하도록 변경
+- 불필요한 연산을 배제해 성능 최적화
 
 ```jsx
-import { createContext, useState } from "react";
-
-export const UserInfoContext = createContext();
-
-export const UserInfoProvider = ({ children }) => {
-  const [userInfo, setUserInfo] = useState({
-    userId: "",
-    userName: "",
-    userRole: "GUEST",
-  });
-
-  return (
-    <UserInfoContext.Provider
-      value={{ userInfo: userInfo, setUserInfo: setUserInfo }}
-    >
-      {children}
-    </UserInfoContext.Provider>
-  );
-};
-```
-
-- App.jsx 반영
-
-```jsx
-import { useContext } from "react";
-import { UserInfoContext, UserInfoProvider } from "./contexts/UserInfoContext";
-
-const Header = () => {
-  const { userInfo, setUserInfo } = useContext(UserInfoContext);
-  return (
-    <header>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <p>로고</p>
-        <nav>
-          {userInfo.userRole === "GUEST" ? (
-            <div>
-              <button
-                onClick={() => {
-                  setUserInfo({
-                    userId: "hong",
-                    userName: "gildong",
-                    userRole: "MEMBER",
-                  });
-                }}
-              >
-                로그인
-              </button>
-              <button onClick={() => {}}>회원가입</button>
-            </div>
-          ) : (
-            <div>
-              <button
-                onClick={() => {
-                  setUserInfo({
-                    userid: "",
-                    userName: "",
-                    userRole: "GUEST",
-                  });
-                }}
-              >
-                로그아웃
-              </button>
-              <button onClick={() => {}}>
-                {userInfo.userName}님의 정보수정
-              </button>
-            </div>
-          )}
-        </nav>
-      </div>
-    </header>
-  );
-};
-const Footer = () => {
-  const { userInfo } = useContext(UserInfoContext);
-
-  return <footer>하단 {userInfo.userRole}</footer>;
-};
-const Main = () => {
-  const { userInfo } = useContext(UserInfoContext);
-
-  return (
-    <main>
-      {userInfo.userRole === "GUEST" ? (
-        <div>로그인 하셔야 서비스 이용이 가능합니다</div>
-      ) : (
-        <>
-          <Character />
-          <Friend />
-          <Point />
-          <Map />
-          <FAQ />
-        </>
-      )}
-    </main>
-  );
-};
-
-const Character = () => {
-  const { userInfo } = useContext(UserInfoContext);
-
-  return (
-    <div>
-      <div>{userInfo.userName}님의 캐릭터 변경 서비스</div>
-      <ChoiceCharacter />
-    </div>
-  );
-};
-const ChoiceCharacter = () => {
-  return <div>캐릭터 종류 선택</div>;
-};
-const Friend = () => {
-  const { userInfo } = useContext(UserInfoContext);
-
-  return <div>{userInfo.userName}님의 친구 관리 서비스</div>;
-};
-const Point = () => {
-  const { userInfo } = useContext(UserInfoContext);
-
-  return <div>{userInfo.userName}님의 포인트 구매 서비스</div>;
-};
-const Map = () => {
-  const { userInfo } = useContext(UserInfoContext);
-
-  return <div>{userInfo.userName}님의 주변 검색 서비스</div>;
-};
-const FAQ = () => {
-  const { userInfo } = useContext(UserInfoContext);
-
-  return <div>{userInfo.userName}님의 고객센터 QnA 서비스</div>;
-};
+import { useState, useMemo } from "react";
 
 function App() {
-  // useState 로 로그인한 사용자 정보 관리
+  const [number, setNumber] = useState(0);
+  const [text, setText] = useState("");
+  // 값을 메모해두고 해당하는 state 가 변경되면 그때만 업데이트 해라
+  const resultFn = useMemo(() => {
+    console.log("다시 계산합니다 : ", number);
+    return number * number;
+  }, [number]);
+  // [ ] 는 의존성 배열이라고 함
+  // number 라는 값이 바뀌면 다시 연산을 하고
+  // 그 외에는 예전 값을 사용하라는 의미
 
   return (
     <div>
-      <UserInfoProvider>
-        <Header />
-        <Main />
-        <Footer />
-      </UserInfoProvider>
+      <h1>간단한 계산 출력</h1>
+      <div>
+        <input
+          type="number"
+          placeholder="숫자를 입력하세요"
+          value={number}
+          // 숫자를 입력할 때 값 변경 : number 값 업데이트
+          onChange={e => {
+            setNumber(parseInt(e.target.value));
+          }}
+        />
+        <p>값 : {resultFn}</p>
+      </div>
+      <div>
+        <input
+          type="text"
+          placeholder="글자를 입력하세요"
+          value={text}
+          // 글자를 입력할 때 number 는 다시 계산하지 않도록
+          onChange={e => {
+            setText(e.target.value);
+          }}
+        />
+        <p>글자 : {text}</p>
+      </div>
+    </div>
+  );
+}
+export default App;
+```
+
+### 활용 예제
+
+- 단순 연산 외에 배열 처리시 활용
+- 배열이 엄청 길때, 배열을 다루는 연산이 복잡하면 실행이 느려짐
+- 배열이 변경 될때만 연산하도록 useMemo 활용
+
+```jsx
+import { useState, useMemo } from "react";
+
+function App() {
+  // 검색어
+  const [query, setQuery] = useState("");
+  // 검색할 배열요소들 : 실제로는 훨씬 많은 요소가 있다고 가정
+  const items = ["apple", "banana", "cherry", "date", "elderberry"];
+
+  // query나 items가 변경될 때만 필터링
+  const filteredItems = useMemo(() => {
+    console.log("Filtering...");
+    return items.filter(item => item.includes(query));
+  }, [query, items]);
+  // query 와 items 에 변화가 일어나면 그때만 계산을 다시하라
+
+  return (
+    <div>
+      <h1>Filtered List</h1>
+      <input
+        type="text"
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+        placeholder="Search items"
+      />
+      <ul>
+        {filteredItems.map(item => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+```
+
+- 배열요소 검색 예제
+
+```jsx
+import { useMemo, useState } from "react";
+
+function App() {
+  // 데이터를 정렬한다
+  const [sortBy, setSortBy] = useState("name");
+  // 더미 데이터
+  const data = [
+    { id: 1, name: "Bbc", age: 40 },
+    { id: 2, name: "Abc", age: 25 },
+    { id: 3, name: "Cbc", age: 35 },
+  ];
+
+  // 복잡한 연산을 매번 실행하지 않고, sortBy 가 바뀐 경우에만 정렬하도록
+  const sortData = useMemo(() => {
+    console.log(sortBy, "로 정렬함");
+    // 아래 sort 구문은 조건에 따라서 true, false 를 반복해 순서배치
+    return [...data].sort((a, b) => (a[sortBy] > b[sortBy] ? 1 : -1));
+  }, [sortBy]);
+
+  console.log(sortData);
+
+  return (
+    <div>
+      <h1>배열의 속성을 이용한 정렬</h1>
+      <div>
+        <select
+          value={sortBy}
+          onChange={e => {
+            setSortBy(e.target.value);
+          }}
+        >
+          <option value={"id"}>ID</option>
+          <option value={"name"}>Name</option>
+          <option value={"age"}>Age</option>
+        </select>
+      </div>
+      {/* 표 */}
+      <table border={1}>
+        {/* table 의 header */}
+        <thead>
+          {/* table의 row */}
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+          </tr>
+        </thead>
+        {/* table 의 body */}
+        <tbody>
+          {sortData.map(item => {
+            return (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.name}</td>
+                <td>{item.age}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
