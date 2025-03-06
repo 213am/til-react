@@ -1,44 +1,61 @@
-# 리소스 최적화
+# Grid
 
-- image, font 등
+- 참고블로그
 
-## 1. image
+  - https://studiomeal.com/archives/533
+  - https://velog.io/@brgndy/CSS-grid-속성-정리
 
-- `/public` 경로에 있는 것은 원본을 유지한다.
-- `/src/assets` 경로에 있는 것은 압축한다.(웹브라우저도 캐시로 보관)
-- 용도에 맞게 판단하자
-- `/src/assets`에 보관하고 사용하는 경우가 일반적
+- 표 레이아웃 만들기에 적합( 칸을 구성하고 배치하는 경우 )
 
-## 2. font
+# 실습예제
 
-- font 는 가능하면 `웹폰트 URL` 을 사용하자
-- `구글 폰트` 또는 `눈누`에 `웹폰트 URL` 이 없는 경우 직접 파일 설정
-- `파일`인 경우 `public 폴더`에 넣어두고 활용하자
-- `/src/assets` 에 두면 설정할 것이 많음
-- 눈누<https://noonnu.cc/font_page/pick>
-- 구글폰트<https://fonts.google.com/>
+- App.jsx
 
-### 2.1. `/public 폴더`에 파일 배치 후 `index.css` 설정
+```jsx
+import "./App.css";
 
-```css
-/* 글꼴 설정 */
-@font-face {
-  font-family: "chab";
-  src: url("/chab.ttf");
-}
-@font-face {
-  font-family: "ddag";
-  src: url("/ddag.ttf");
-}
-
-body {
-  font-family: "chab";
-  font-size: var(--font-size-base);
-  color: var(--primary-color);
-}
+const App = () => {
+  return (
+    <div>
+      <h1>Grid</h1>
+      <div className="container">
+        <div className="item">A</div>
+        <div className="item">B</div>
+        <div className="item">C</div>
+        <div className="item">D</div>
+        <div className="item">E</div>
+        <div className="item">F</div>
+        <div className="item">G</div>
+        <div className="item">H</div>
+        <div className="item">I</div>
+      </div>
+    </div>
+  );
+};
+export default App;
 ```
 
-# 빌드하기
+- `/src/App.css` 파일 생성
 
-- 배포 버전 생성 : `npm run build`
-- 배포 버전 테스트 : `npm run preview`
+```css
+.container {
+  display: grid;
+  height: 800px;
+  /* 셀 가로 */
+  /* grid-template-columns: 100px 700px 100px; */
+  /* 비율로 설정 */
+  /* grid-template-columns: 1fr 6fr 1fr; */
+  /* grid 함수 */
+  /* grid-template-columns: repeat(3, 1fr); */
+  /* 고정된 레이아웃 및 내용 auto */
+  grid-template-columns: 200px auto 200px;
+  /* 셀 세로 */
+  /* grid-template-rows: 100px 650px 100px; */
+  grid-template-rows: 1fr 9fr 1fr;
+}
+
+.item {
+  font-weight: 700;
+  border: 2px solid red;
+}
+```
