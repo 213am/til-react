@@ -1,20 +1,27 @@
-import "./App.css";
+import { useState } from "react";
+import Child from "./pages/Child";
 
 const App = () => {
+  console.log("App : 리렌더링");
+  const [count, setCount] = useState(0);
+  const [text, setText] = useState("");
+
   return (
-    <div>
-      <h1>Grid</h1>
-      <div className="container">
-        <div className="item">A</div>
-        <div className="item">B</div>
-        <div className="item">C</div>
-        <div className="item">D</div>
-        <div className="item">E</div>
-        <div className="item">F</div>
-        <div className="item">G</div>
-        <div className="item">H</div>
-        <div className="item">I</div>
+    <div
+      style={{ display: "flex", flexDirection: "column", gap: 20, padding: 30 }}
+    >
+      <div>
+        <h1>count : {count}</h1>
+        <button onClick={() => setCount(count + 1)}>count 증가</button>
       </div>
+      <div>
+        <input
+          type="text"
+          value={text}
+          onChange={e => setText(e.target.value)}
+        />
+      </div>
+      <Child count={count} />
     </div>
   );
 };
